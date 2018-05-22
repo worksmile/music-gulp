@@ -19,12 +19,17 @@ var folder = {
 };
 //压缩html
 gulp.task('html', function() {
-    var page = gulp.src(folder.src + 'html/*');
-    page.pipe(connect.reload());  //改变自动刷新
-    if(!devMode){
-        page.pipe(htmlclean()) //变成文件流操作
-    }
-    page.pipe(gulp.dest(folder.dist + 'html/'));
+    // var page = gulp.src(folder.src + 'html/*');
+    // page.pipe(connect.reload());  //改变自动刷新
+    // if(devMode){
+    //     page.pipe(htmlclean()) //变成文件流操作
+    // }
+    // page.pipe(gulp.dest(folder.dist + 'html/'));
+
+    var page = gulp.src(folder.src + 'html/*')
+    .pipe(connect.reload())  //改变自动刷新
+    .pipe(htmlclean()) //变成文件流操作
+    .pipe(gulp.dest(folder.dist + 'html/'));
 });
 //压缩图片
 gulp.task('images', function() {
@@ -36,24 +41,34 @@ gulp.task('images', function() {
 gulp.task('js', function() {
     var page = gulp.src(folder.src + 'js/*');
     page.pipe(connect.reload());
-    if(!devMode){
+    if(devMode){
         page.pipe(jsStripDebug())
-		.pipe(jsConcat('main.js')) //最终把所有的js拼接到main.js中
+		//.pipe(jsConcat('main.js')) //最终把所有的js拼接到main.js中
 		.pipe(jsuglify())
     }
     page.pipe(gulp.dest(folder.dist + 'js/'));
+
+    //  gulp.src(folder.src + 'js/*')
+    //     .pipe(connect.reload())
+    //     .pipe(jsStripDebug())
+	// 	.pipe(jsConcat('main.js')) //最终把所有的js拼接到main.js中
+	// 	.pipe(jsuglify())
+    //     .pipe(gulp.dest(folder.dist + 'js/'));
 });
 //压缩css
 gulp.task('less', function() {
     var options = [autoprefixer(),cssnano()];
-    var page = gulp.src(folder.src + 'css/*');
-    page.pipe(connect.reload());
-    if(!devMode){
-        page.pipe(less())
-        //.pipe(postcss([require('autoprefixer'),require('cssnano')]))
-        .pipe(postcss(options))
-    }   
-    page.pipe(gulp.dest(folder.dist + 'css/'));
+    var page = gulp.src(folder.src + 'css/*')
+                .pipe(connect.reload())
+                .pipe(less())
+                .pipe(postcss([require('autoprefixer'),require('cssnano')]))
+                .pipe(postcss(options))
+    // if(devMode){
+    //     page
+        
+    // }   
+                .pipe(gulp.dest(folder.dist + 'css/'));
+
 });
 //监听文件自动构建
 gulp.task('watch',function(){
